@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Akidah - SMP Islam El Rasyad</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A017;
+    --dark-green: #1a3c1a;
+    --mid-green: #2d6a2d;
+    --light-green: #4CAF50;
+    --cream: #FFF8E7;
+    --dark: #0f1f0f;
+    --white: #ffffff;
+    --red: #c0392b;
+    --blue: #2980b9;
+    --shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ========== BACKGROUND ========== */
+  .bg-pattern {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(45,106,45,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(212,160,23,0.15) 0%, transparent 50%),
+      linear-gradient(135deg, #0f1f0f 0%, #1a3c1a 50%, #0f1f0f 100%);
+  }
+  .bg-pattern::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent, transparent 30px,
+      rgba(212,160,23,0.03) 30px, rgba(212,160,23,0.03) 31px
+    );
+  }
+
+  /* ========== SCREENS ========== */
+  .screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+
+  /* ========== WELCOME SCREEN ========== */
+  .welcome-card {
+    background: linear-gradient(145deg, rgba(26,60,26,0.95), rgba(15,31,15,0.98));
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow), 0 0 60px rgba(212,160,23,0.15);
+    animation: fadeIn 0.8s ease;
+  }
+
+  .school-logo {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    margin: 0 auto 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2d6a2d, #1a3c1a);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(212,160,23,0.4);
+    position: relative;
+  }
+  .school-logo svg {
+    width: 90px; height: 90px;
+  }
+
+  .school-name {
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .school-sub {
+    font-size: 11px;
+    color: rgba(212,160,23,0.7);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .welcome-title {
+    font-family: 'Amiri', serif;
+    font-size: 32px;
+    color: var(--gold);
+    margin-bottom: 6px;
+    text-shadow: 0 0 20px rgba(212,160,23,0.5);
+  }
+  .welcome-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+  .made-by {
+    font-size: 11px;
+    color: rgba(212,160,23,0.5);
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+  }
+  .made-by span { color: var(--gold); font-weight: 700; }
+
+  .divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 16px auto;
+  }
+
+  .input-group { margin-bottom: 20px; }
+  .input-group label {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  .input-group input {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: white;
+    font-size: 16px;
+    font-family: 'Tajawal', sans-serif;
+    outline: none;
+    transition: all 0.3s;
+  }
+  .input-group input:focus {
+    border-color: var(--gold);
+    background: rgba(212,160,23,0.1);
+    box-shadow: 0 0 20px rgba(212,160,23,0.2);
+  }
+  .input-group input::placeholder { color: rgba(255,255,255,0.3); }
+
+  .class-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .class-btn {
+    padding: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Tajawal', sans-serif;
+  }
+  .class-btn:hover, .class-btn.active {
+    background: rgba(212,160,23,0.2);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .btn-start {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gold), #b8860b);
+    border: none;
+    border-radius: 12px;
+    color: var(--dark);
+    font-size: 17px;
+    font-weight: 900;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 20px rgba(212,160,23,0.4);
+  }
+  .btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(212,160,23,0.6);
+  }
+  .btn-start:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-leaderboard {
+    width: 100%;
+    margin-top: 10px;
+    padding: 13px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-leaderboard:hover {
+    border-color: rgba(255,255,255,0.4);
+    color: white;
+  }
+
+  /* ========== QUIZ SCREEN ========== */
+  .quiz-wrap {
+    max-width: 700px;
+    width: 100%;
+    animation: slideUp 0.5s ease;
+  }
+
+  .quiz-header {
+    background: linear-gradient(135deg, rgba(26,60,26,0.95), rgba(15,31,15,0.95));
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 16px;
+    padding: 16px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .player-badge {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .player-avatar {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold), #b8860b);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 18px; color: var(--dark);
+  }
+  .player-name-small {
+    color: white; font-weight: 700; font-size: 15px;
+  }
+  .player-class-small {
+    color: rgba(212,160,23,0.7); font-size: 12px;
+  }
+
+  .quiz-stats { display: flex; gap: 20px; align-items: center; }
+  .stat-item { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 900; color: var(--gold); line-height: 1; }
+  .stat-lab { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    height: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #4CAF50);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .timer-bar-wrap {
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    height: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .timer-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #D4A017, #c0392b);
+    border-radius: 4px;
+    transition: width 1s linear;
+  }
+
+  .question-card {
+    background: linear-gradient(145deg, rgba(26,60,26,0.95), rgba(15,31,15,0.98));
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .q-number {
+    font-size: 12px;
+    color: rgba(212,160,23,0.6);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-size: 18px;
+    color: white;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    font-weight: 500;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .option-btn {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 16px 18px;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: left;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: rgba(212,160,23,0.5);
+    background: rgba(212,160,23,0.08);
+    transform: translateY(-2px);
+  }
+  .option-label {
+    background: rgba(212,160,23,0.2);
+    color: var(--gold);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .option-btn.correct {
+    border-color: #4CAF50;
+    background: rgba(76,175,80,0.15);
+  }
+  .option-btn.correct .option-label { background: #4CAF50; color: white; }
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: rgba(192,57,43,0.15);
+  }
+  .option-btn.wrong .option-label { background: var(--red); color: white; }
+  .option-btn:disabled { cursor: not-allowed; }
+
+  .explanation-box {
+    margin-top: 20px;
+    background: rgba(45,106,45,0.2);
+    border: 1px solid rgba(76,175,80,0.4);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .explanation-box.show { display: block; }
+  .explanation-box .exp-title {
+    color: #4CAF50;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .explanation-box .exp-text {
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .quiz-nav {
+    display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap;
+  }
+  .btn-see-exp {
+    padding: 12px 20px;
+    background: rgba(45,106,45,0.3);
+    border: 1px solid rgba(76,175,80,0.4);
+    border-radius: 10px;
+    color: #4CAF50;
+    font-size: 14px;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+  }
+  .btn-see-exp:hover { background: rgba(45,106,45,0.5); }
+  .btn-next {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--gold), #b8860b);
+    border: none;
+    border-radius: 10px;
+    color: var(--dark);
+    font-size: 15px;
+    font-weight: 900;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+  }
+  .btn-next:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(212,160,23,0.4); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ========== RESULT SCREEN ========== */
+  .result-card {
+    background: linear-gradient(145deg, rgba(26,60,26,0.95), rgba(15,31,15,0.98));
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+    animation: bounceIn 0.6s ease;
+  }
+  .result-emoji { font-size: 60px; margin-bottom: 16px; }
+  .result-name { font-size: 24px; color: white; font-weight: 700; margin-bottom: 4px; }
+  .result-score-big {
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(212,160,23,0.5);
+    margin: 16px 0;
+  }
+  .result-label { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 8px; }
+  .result-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 24px 0;
+  }
+  .r-stat {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .r-stat .v { font-size: 24px; font-weight: 900; color: var(--gold); }
+  .r-stat .l { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; text-transform: uppercase; }
+  .result-grade {
+    font-size: 20px; font-weight: 700; margin-bottom: 24px;
+    padding: 12px; border-radius: 10px;
+  }
+  .grade-a { background: rgba(76,175,80,0.2); color: #4CAF50; border: 1px solid rgba(76,175,80,0.3); }
+  .grade-b { background: rgba(212,160,23,0.2); color: var(--gold); border: 1px solid rgba(212,160,23,0.3); }
+  .grade-c { background: rgba(192,57,43,0.2); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }
+
+  .btn-group-result { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-retry, .btn-board {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-retry { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; }
+  .btn-retry:hover { background: rgba(255,255,255,0.15); }
+  .btn-board { background: linear-gradient(135deg, var(--gold), #b8860b); border: none; color: var(--dark); }
+  .btn-board:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(212,160,23,0.4); }
+
+  /* ========== LEADERBOARD ========== */
+  .leaderboard-wrap {
+    max-width: 600px; width: 100%;
+    animation: slideUp 0.5s ease;
+  }
+  .lb-header {
+    text-align: center; margin-bottom: 24px;
+  }
+  .lb-title {
+    font-family: 'Amiri', serif;
+    font-size: 36px;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(212,160,23,0.4);
+  }
+  .lb-sub { color: rgba(255,255,255,0.5); font-size: 14px; margin-top: 4px; }
+
+  .lb-card {
+    background: linear-gradient(145deg, rgba(26,60,26,0.95), rgba(15,31,15,0.98));
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .lb-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+  }
+  .lb-item:last-child { border-bottom: none; }
+  .lb-item:hover { background: rgba(255,255,255,0.03); }
+  .lb-rank {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px;
+    flex-shrink: 0;
+  }
+  .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #333; }
+  .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A8A8A8); color: #333; }
+  .rank-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: white; }
+  .rank-n { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
+  .lb-info { flex: 1; }
+  .lb-name { color: white; font-weight: 700; font-size: 16px; }
+  .lb-meta { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 2px; }
+  .lb-score {
+    font-size: 24px; font-weight: 900;
+    color: var(--gold);
+    text-align: right;
+  }
+  .lb-score-sub { font-size: 11px; color: rgba(255,255,255,0.4); text-align: right; }
+  .lb-empty {
+    padding: 48px; text-align: center;
+    color: rgba(255,255,255,0.3); font-size: 15px;
+  }
+  .btn-back {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    color: rgba(255,255,255,0.6);
+    font-size: 15px;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: rgba(255,255,255,0.4); color: white; }
+
+  /* LOADING */
+  .loading-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.8);
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+  }
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 56px; height: 56px;
+    border: 4px solid rgba(212,160,23,0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .loading-text { color: var(--gold); font-size: 16px; font-weight: 700; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: rgba(26,60,26,0.98);
+    border: 1px solid var(--gold);
+    color: white; padding: 14px 28px;
+    border-radius: 50px; font-size: 14px; font-weight: 600;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* FEEDBACK POPUP */
+  .feedback-popup {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 100;
+    font-size: 64px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+  }
+  .feedback-popup.show { transform: translate(-50%, -50%) scale(1); }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.7); }
+    70% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* MOBILE */
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .q-text { font-size: 16px; }
+    .quiz-header { flex-direction: column; gap: 12px; }
+    .quiz-stats { width: 100%; justify-content: space-around; }
+    .welcome-card { padding: 28px 20px; }
+    .result-card { padding: 28px 20px; }
+    .result-score-big { font-size: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-pattern"></div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Memuat soal...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FEEDBACK POPUP -->
+<div class="feedback-popup" id="feedbackPopup"></div>
+
+<!-- ===================== WELCOME SCREEN ===================== -->
+<div class="screen active" id="screenWelcome">
+  <div class="welcome-card">
+
+    <div class="school-logo">
+      <!-- SMP Islam El Rasyad Logo SVG -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer ring -->
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#D4A017" stroke-width="2.5"/>
+        <!-- Star/crescent motif -->
+        <polygon points="50,10 54,38 80,38 58,56 66,84 50,68 34,84 42,56 20,38 46,38"
+          fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- Crescent -->
+        <path d="M50,22 A18,18 0 1,0 50,58 A12,12 0 1,1 50,22 Z"
+          fill="#D4A017" opacity="0.8"/>
+        <!-- Inner star -->
+        <circle cx="50" cy="40" r="6" fill="#D4A017"/>
+        <!-- Text arc top -->
+        <text x="50" y="0" text-anchor="middle" fill="#D4A017" font-size="6.5" font-family="Tajawal,sans-serif" font-weight="700">
+          <textPath href="#topArc" startOffset="50%">SMP ISLAM EL RASYAD</textPath>
+        </text>
+        <!-- Text arc bottom -->
+        <text x="50" y="0" text-anchor="middle" fill="#D4A017" font-size="6" font-family="Tajawal,sans-serif" opacity="0.8">
+          <textPath href="#botArc" startOffset="50%">JAKARTA SELATAN</textPath>
+        </text>
+        <defs>
+          <path id="topArc" d="M 10,50 A 40,40 0 0,1 90,50"/>
+          <path id="botArc" d="M 15,60 A 40,40 0 0,0 85,60"/>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="school-name">SMP Islam El Rasyad</div>
+    <div class="school-sub">Jakarta Selatan</div>
+
+    <div class="welcome-title">📚 Quiz Akidah</div>
+    <div class="welcome-subtitle">Uji pemahamanmu dengan 50 soal pilihan ganda</div>
+    <div class="made-by">Made by <span>King Utbah</span> &amp; <span>Claude AI Sigma</span> ⚡</div>
+
+    <div class="divider"></div>
+
+    <div class="input-group">
+      <label>👤 Nama Lengkap</label>
+      <input type="text" id="nameInput" placeholder="Masukkan nama kamu..." maxlength="40" />
+    </div>
+
+    <div class="input-group">
+      <label>🎓 Kelas</label>
+      <div class="class-grid">
+        <button class="class-btn" onclick="selectClass(this,'7A')">7A</button>
+        <button class="class-btn" onclick="selectClass(this,'7B')">7B</button>
+        <button class="class-btn" onclick="selectClass(this,'7C')">7C</button>
+        <button class="class-btn" onclick="selectClass(this,'8A')">8A</button>
+        <button class="class-btn" onclick="selectClass(this,'8B')">8B</button>
+        <button class="class-btn" onclick="selectClass(this,'8C')">8C</button>
+        <button class="class-btn" onclick="selectClass(this,'9A')">9A</button>
+        <button class="class-btn" onclick="selectClass(this,'9B')">9B</button>
+        <button class="class-btn" onclick="selectClass(this,'9C')">9C</button>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btnStart" onclick="startQuiz()" disabled>
+      🚀 Mulai Quiz
+    </button>
+    <button class="btn-leaderboard" onclick="showLeaderboard()">
+      🏆 Lihat Papan Peringkat
+    </button>
+  </div>
+</div>
+
+<!-- ===================== QUIZ SCREEN ===================== -->
+<div class="screen" id="screenQuiz">
+  <div class="quiz-wrap">
+
+    <div class="quiz-header">
+      <div class="player-badge">
+        <div class="player-avatar" id="playerAvatar">?</div>
+        <div>
+          <div class="player-name-small" id="playerNameSmall">-</div>
+          <div class="player-class-small" id="playerClassSmall">-</div>
+        </div>
+      </div>
+      <div class="quiz-stats">
+        <div class="stat-item">
+          <div class="stat-val" id="statQ">1/50</div>
+          <div class="stat-lab">Soal</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statScore">0</div>
+          <div class="stat-lab">Poin</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statTimer">30</div>
+          <div class="stat-lab">Detik</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="statStreak">🔥0</div>
+          <div class="stat-lab">Streak</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar" style="width:2%"></div>
+    </div>
+    <div class="timer-bar-wrap">
+      <div class="timer-bar-fill" id="timerBar" style="width:100%"></div>
+    </div>
+
+    <div class="question-card">
+      <div class="q-number" id="qNumber">SOAL 1 dari 50</div>
+      <div class="q-text" id="qText">Memuat soal...</div>
+      <div class="options-grid" id="optionsGrid"></div>
+      <div class="explanation-box" id="explanationBox">
+        <div class="exp-title">💡 Penjelasan</div>
+        <div class="exp-text" id="expText"></div>
+      </div>
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn-see-exp" id="btnSeeExp" onclick="toggleExplanation()" style="display:none">
+        💡 Lihat Penjelasan
+      </button>
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>
+        Lanjut →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== RESULT SCREEN ===================== -->
+<div class="screen" id="screenResult">
+  <div class="result-card">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-name" id="resultName">Nama Kamu</div>
+    <div class="result-label">Total Poin</div>
+    <div class="result-score-big" id="resultScore">0</div>
+    <div class="result-grade" id="resultGrade">Predikat</div>
+    <div class="result-stats">
+      <div class="r-stat">
+        <div class="v" id="rCorrect">0</div>
+        <div class="l">✅ Benar</div>
+      </div>
+      <div class="r-stat">
+        <div class="v" id="rWrong">0</div>
+        <div class="l">❌ Salah</div>
+      </div>
+      <div class="r-stat">
+        <div class="v" id="rStreak">0</div>
+        <div class="l">🔥 Max Streak</div>
+      </div>
+    </div>
+    <div class="btn-group-result">
+      <button class="btn-retry" onclick="retryQuiz()">🔄 Coba Lagi</button>
+      <button class="btn-board" onclick="showLeaderboard()">🏆 Papan Peringkat</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LEADERBOARD SCREEN ===================== -->
+<div class="screen" id="screenLeaderboard">
+  <div class="leaderboard-wrap">
+    <div class="lb-header">
+      <div class="lb-title">🏆 Papan Peringkat</div>
+      <div class="lb-sub">SMP Islam El Rasyad — Quiz Akidah</div>
+    </div>
+    <div class="lb-card" id="leaderboardList"></div>
+    <button class="btn-back" onclick="showWelcome()">← Kembali ke Menu</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA & STATE
+// ============================================================
+const STORAGE_KEY = 'akidah_leaderboard_v2';
+let playerName = '';
+let playerClass = '';
+let currentQ = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let streak = 0;
+let maxStreak = 0;
+let answered = false;
+let timerInterval = null;
+let timeLeft = 30;
+let questions = [];
+let expVisible = false;
+
+// All 50 questions with shuffled correct answers
+const ALL_QUESTIONS = [
+  {
+    q: "Kata 'Akidah' secara bahasa berasal dari kata 'aqada yang artinya...",
+    opts: ["Keyakinan yang kuat", "Ikatan, simpulan, atau janji yang kokoh", "Percaya dan beriman", "Mengingat Allah"],
+    ans: 1,
+    exp: "Secara bahasa, Akidah berasal dari kata 'aqada yang berarti ikatan, simpulan, atau janji yang kokoh. Ini menggambarkan bahwa akidah adalah keyakinan yang terikat kuat dalam hati."
+  },
+  {
+    q: "Tingkatan tertinggi dalam beragama Islam adalah...",
+    opts: ["Iman", "Islam", "Ihsan", "Taqwa"],
+    ans: 2,
+    exp: "Ihsan adalah tingkatan tertinggi dalam beragama, yaitu beribadah kepada Allah seakan-akan melihat-Nya, atau minimal merasa selalu diawasi oleh-Nya."
+  },
+  {
+    q: "Islam Kaffah artinya menjalankan syariat Islam secara...",
+    opts: ["Sebagian saja sesuai kemampuan", "Menyeluruh dan utuh dalam segala aspek kehidupan", "Pilih-pilih sesuai kesukaan", "Hanya dalam ibadah sholat dan puasa"],
+    ans: 1,
+    exp: "Islam Kaffah berarti menjalankan syariat Islam secara menyeluruh dan utuh dalam segala aspek kehidupan tanpa memilah-milah, sesuai QS. Al-Baqarah: 208."
+  },
+  {
+    q: "Tiga rukun ibadah yang harus ada adalah Mahabbah, Khauf, dan...",
+    opts: ["Sabar", "Ikhlas", "Rajaa", "Tawadu"],
+    ans: 2,
+    exp: "Rukun ibadah terdiri dari: Mahabbah (cinta kepada Allah), Khauf (takut akan azab Allah), dan Rajaa (berharap rahmat Allah). Ketiganya harus ada secara seimbang."
+  },
+  {
+    q: "Dampak dari perbuatan syirik besar adalah...",
+    opts: ["Hanya mengurangi pahala amal", "Mengeluarkan dari Islam, menghapus amal, dan kekal di neraka", "Diampuni jika bertobat saja", "Tidak terlalu berpengaruh"],
+    ans: 1,
+    exp: "Syirik besar (Akbar) memiliki konsekuensi berat: mengeluarkan pelakunya dari Islam, menghapuskan seluruh amal, dan jika tidak bertaubat akan kekal di neraka."
+  },
+  {
+    q: "Al-Wala wal Bara' secara singkat berarti...",
+    opts: ["Cinta dan benci", "Kesetiaan kepada Muslim dan berlepas diri dari kekufuran", "Persaudaraan sesama manusia", "Berdakwah dan berjihad"],
+    ans: 1,
+    exp: "Al-Wala wal Bara' adalah prinsip kesetiaan kepada sesama Muslim (Wala) dan berlepas diri dari kekufuran/kemaksiatan (Bara'). Ini merupakan konsekuensi dari syahadat."
+  },
+  {
+    q: "Hukum Al-Wala wal Bara' bagi setiap Muslim adalah...",
+    opts: ["Sunnah", "Wajib", "Mubah", "Makruh"],
+    ans: 1,
+    exp: "Al-Wala wal Bara' hukumnya WAJIB bagi setiap Muslim sebagai bagian dari konsekuensi syahadat. Ini merupakan salah satu prinsip penting dalam akidah Islam."
+  },
+  {
+    q: "Dua syarat sah ibadah adalah Ikhlas dan...",
+    opts: ["Sabar", "Khusyuk", "Ittiba'", "Tawakal"],
+    ans: 2,
+    exp: "Syarat sah ibadah ada dua: Ikhlas (niat hanya karena Allah) dan Ittiba' (sesuai tuntunan Nabi Muhammad SAW). Tanpa salah satunya, ibadah tidak sah."
+  },
+  {
+    q: "Tujuan utama diutusnya para Rasul adalah menegakkan...",
+    opts: ["Tauhid Rububiyyah", "Tauhid Uluhiyyah", "Tauhid Asma wa Sifat", "Hukum syariat"],
+    ans: 1,
+    exp: "Tujuan utama diutusnya para Rasul adalah menegakkan Tauhid Uluhiyyah, yaitu mengesakan Allah dalam segala bentuk ibadah. Inilah inti dari dakwah para Nabi."
+  },
+  {
+    q: "Mengapa sihir termasuk pembatal syahadat?",
+    opts: ["Karena berbahaya secara fisik", "Karena melibatkan bantuan setan dan termasuk kesyirikan", "Karena dilarang hukum negara", "Karena membuat orang takut"],
+    ans: 1,
+    exp: "Sihir merupakan pembatal keislaman karena dalam praktiknya melibatkan bantuan setan dan meminta pertolongan selain Allah, yang termasuk perbuatan kesyirikan."
+  },
+  {
+    q: "Perbedaan Akidah dan Tauhid adalah...",
+    opts: ["Tidak ada perbedaan, sama saja", "Akidah lebih luas (seluruh rukun iman), Tauhid fokus pada pengesaan Allah", "Tauhid lebih luas dari Akidah", "Akidah hanya untuk ulama"],
+    ans: 1,
+    exp: "Akidah memiliki cakupan lebih luas karena mencakup seluruh rukun iman, sedangkan Tauhid lebih spesifik fokus pada pengesaan Allah (Tauhid Rububiyyah, Uluhiyyah, Asma wa Sifat)."
+  },
+  {
+    q: "Azh-Zhalimu Linafsih adalah tingkatan hamba yang...",
+    opts: ["Sudah sempurna imannya", "Masih melakukan maksiat meski sudah beribadah", "Kafir dan tidak beriman", "Selalu rajin beribadah"],
+    ans: 1,
+    exp: "Azh-Zhalimu Linafsih adalah orang yang menganiaya diri sendiri karena masih melakukan maksiat meskipun sudah beribadah. Ini adalah tingkatan yang masih perlu banyak perbaikan diri."
+  },
+  {
+    q: "Secara bahasa, Iman berarti...",
+    opts: ["Beribadah dan taat", "At-Tashdiq (membenarkan) atau Al-Iqraar (mengakui)", "Menyerah kepada Allah", "Melaksanakan perintah"],
+    ans: 1,
+    exp: "Secara bahasa, Iman berarti At-Tashdiq (membenarkan) atau Al-Iqraar (mengakui). Sedangkan secara istilah, iman adalah keyakinan dalam hati, ucapan lisan, dan perbuatan anggota badan."
+  },
+  {
+    q: "Iman kepada Malaikat mencakup meyakini...",
+    opts: ["Hanya keberadaan malaikat saja", "Keberadaan, sifat fisik dari cahaya, dan tugas-tugasnya", "Hanya tugas-tugas malaikat", "Nama-nama malaikat terkenal"],
+    ans: 1,
+    exp: "Iman kepada Malaikat mencakup meyakini: keberadaan mereka, sifat fisik (diciptakan dari cahaya), serta tugas-tugas yang Allah berikan kepada mereka."
+  },
+  {
+    q: "Kitab Zabur diturunkan kepada Nabi...",
+    opts: ["Nabi Isa AS", "Nabi Musa AS", "Nabi Dawud AS", "Nabi Ibrahim AS"],
+    ans: 2,
+    exp: "Kitab Zabur diturunkan kepada Nabi Dawud AS. Sementara Taurat kepada Nabi Musa AS, Injil kepada Nabi Isa AS, dan Al-Qur'an kepada Nabi Muhammad SAW."
+  },
+  {
+    q: "Tanda Kiamat Kecil yang sudah berlalu adalah...",
+    opts: ["Munculnya Dajjal", "Diutusnya Nabi Muhammad SAW dan wafatnya beliau", "Matahari terbit dari barat", "Keluarnya binatang melata dari bumi"],
+    ans: 1,
+    exp: "Di antara tanda Kiamat Kecil yang telah berlalu adalah diutusnya Nabi Muhammad SAW sebagai Rasul terakhir dan wafatnya beliau. Ini sudah terjadi berabad-abad lalu."
+  },
+  {
+    q: "As-Shirat adalah...",
+    opts: ["Timbangan amal di akhirat", "Jembatan tipis di atas neraka menuju surga", "Lapangan mahsyar tempat berkumpul", "Catatan amal perbuatan"],
+    ans: 1,
+    exp: "As-Shirat adalah jembatan tipis yang terbentang di atas neraka menuju surga. Kecepatan melewatinya tergantung amal masing-masing orang semasa hidupnya."
+  },
+  {
+    q: "Kebangkitan manusia di akhirat terjadi setelah...",
+    opts: ["Tiupan sangkakala pertama oleh Malaikat Israfil", "Tiupan sangkakala kedua oleh Malaikat Israfil", "Perintah langsung dari Allah", "Semua malaikat berkumpul"],
+    ans: 1,
+    exp: "Kebangkitan terjadi setelah ditiupnya sangkakala yang KEDUA oleh Malaikat Israfil. Tiupan pertama untuk mematikan semua makhluk, tiupan kedua untuk membangkitkan."
+  },
+  {
+    q: "Nikmat atau azab kubur dialami oleh...",
+    opts: ["Ruh saja tanpa jasad", "Jasad saja tanpa ruh", "Ruh dan jasad secara nyata", "Hanya dibayangkan saja"],
+    ans: 2,
+    exp: "Akidah Ahlus Sunnah menyatakan bahwa nikmat atau azab kubur dialami oleh ruh DAN jasad secara nyata. Ini adalah keyakinan yang harus dipegang seorang Muslim."
+  },
+  {
+    q: "Tugas Malaikat Mikail adalah...",
+    opts: ["Mencabut nyawa manusia", "Mengatur rezeki, menurunkan hujan, mengatur tumbuhan", "Menjaga pintu surga", "Mencatat amal manusia"],
+    ans: 1,
+    exp: "Tugas Malaikat Mikail adalah mengatur pembagian rezeki, menurunkan hujan, dan mengatur tumbuh-tumbuhan. Malaikat Izrail bertugas mencabut nyawa."
+  },
+  {
+    q: "Surah yang menjelaskan Hari Kiamat secara mendalam adalah...",
+    opts: ["QS. Al-Fatihah dan Al-Baqarah", "QS. Al-Qari'ah dan QS. Al-Zalzalah", "QS. Al-Ikhlas dan Al-Falaq", "QS. Al-Mulk dan Yasin"],
+    ans: 1,
+    exp: "Hari Kiamat dijelaskan secara mendalam di antaranya dalam QS. Al-Qari'ah (Hari Kiamat yang menggemparkan) dan QS. Al-Zalzalah (Hari Kiamat dengan guncangan dahsyat)."
+  },
+  {
+    q: "Menurut hadis sahih, Malaikat Jibril memiliki berapa sayap?",
+    opts: ["100 sayap", "300 sayap", "600 sayap", "1000 sayap"],
+    ans: 2,
+    exp: "Menurut riwayat hadis sahih, Malaikat Jibril memiliki 600 sayap. Ini menunjukkan keagungan dan kebesaran ciptaan Allah SWT."
+  },
+  {
+    q: "Takdir Muallaq adalah takdir yang...",
+    opts: ["Tidak bisa berubah sama sekali", "Bisa berubah dengan doa dan ikhtiar", "Sudah ditetapkan sejak azali", "Hanya berlaku di dunia"],
+    ans: 1,
+    exp: "Takdir Muallaq adalah takdir yang bisa berubah dengan doa dan ikhtiar, berbeda dengan Takdir Mubram yang sudah pasti tidak bisa diubah (seperti kematian, hari kiamat)."
+  },
+  {
+    q: "Pendapat ulama tentang makna 'Istawa' adalah Allah...",
+    opts: ["Ada di mana-mana tanpa arah", "Bersemayam di atas Arsy sesuai keagungan-Nya", "Tidak bisa dijelaskan sama sekali", "Berada dalam hati orang beriman"],
+    ans: 1,
+    exp: "Pendapat ulama Ahlus Sunnah menyatakan Allah bersemayam (Istawa) di atas Arsy sesuai dengan keagungan-Nya, sebagaimana disebutkan dalam Al-Qur'an."
+  },
+  {
+    q: "Dalil Allah berada di atas Arsy terdapat dalam...",
+    opts: ["QS. Al-Fatihah dan Al-Baqarah", "QS. Thaha ayat 5 dan QS. Al-A'raf ayat 54", "QS. Al-Ikhlas ayat 1-4", "QS. Al-Mulk ayat 1-3"],
+    ans: 1,
+    exp: "Dalil Allah di atas Arsy di antaranya terdapat dalam QS. Thaha ayat 5: 'Ar-Rahman 'alal 'arsyistawa' dan QS. Al-A'raf ayat 54."
+  },
+  {
+    q: "Mempercayai ramalan zodiak termasuk syirik karena...",
+    opts: ["Hanya membuang waktu", "Meyakini bintang memiliki pengaruh terhadap nasib manusia", "Tidak sesuai ilmu pengetahuan", "Meniru budaya barat"],
+    ans: 1,
+    exp: "Mempercayai ramalan zodiak termasuk syirik karena meyakini bintang/rasi bintang memiliki pengaruh terhadap nasib dan masa depan manusia, padahal hanya Allah yang menentukan takdir."
+  },
+  {
+    q: "Makna Tawakal yang benar adalah...",
+    opts: ["Pasrah tanpa usaha apapun", "Berserah diri kepada Allah setelah melakukan usaha (ikhtiar) maksimal", "Hanya berdoa tanpa ikhtiar", "Menyerah pada keadaan"],
+    ans: 1,
+    exp: "Tawakal yang benar adalah berserah diri sepenuhnya kepada Allah SETELAH melakukan usaha (ikhtiar) secara maksimal. Bukan pasrah tanpa usaha, tapi ikhtiar dulu baru bertawakal."
+  },
+  {
+    q: "Hadis Tasyabbuh melarang kita untuk...",
+    opts: ["Belajar bahasa asing", "Mengikuti atau menyerupai gaya hidup, ibadah, atau ciri khas kaum kafir", "Berdagang dengan non-muslim", "Memakan makanan luar negeri"],
+    ans: 1,
+    exp: "Hadis Tasyabbuh berisi larangan untuk mengikuti atau menyerupai (tasyabbuh) gaya hidup, cara ibadah, atau ciri khas kaum kafir. 'Barang siapa menyerupai suatu kaum maka ia termasuk golongan mereka.'"
+  },
+  {
+    q: "Asmaul Husna Al-Adzim berarti...",
+    opts: ["Allah Maha Pengasih", "Allah Maha Agung", "Allah Maha Kuasa", "Allah Maha Mengetahui"],
+    ans: 1,
+    exp: "Al-Adzim adalah salah satu Asmaul Husna yang berarti Allah Maha Agung. Keagungan Allah tidak tertandingi oleh apapun di alam semesta ini."
+  },
+  {
+    q: "Riya termasuk dalam kategori...",
+    opts: ["Syirik Akbar (syirik besar)", "Syirik Ashghar (syirik kecil)", "Kufur nikmat", "Perbuatan makruh"],
+    ans: 1,
+    exp: "Riya (beramal untuk dilihat orang lain) termasuk Syirik Ashghar (syirik kecil) yang merusak pahala amal. Meskipun kecil, tetapi sangat berbahaya karena sering tidak disadari."
+  },
+  {
+    q: "Asmaul Husna yang bermakna Allah Maha Mendengar adalah...",
+    opts: ["Al-Bashir", "As-Sami'", "Al-Khabir", "Al-Alim"],
+    ans: 1,
+    exp: "As-Sami' adalah Asmaul Husna yang berarti Allah Maha Mendengar. Allah mendengar setiap doa, bisikan hati, dan semua ucapan hamba-hamba-Nya tanpa terkecuali."
+  },
+  {
+    q: "Makna QS. Al-Mulk ayat 16 adalah peringatan bahwa...",
+    opts: ["Manusia harus bekerja keras", "Allah di atas langit berkuasa mendatangkan azab", "Langit adalah tempat tinggal Allah", "Malaikat menjaga bumi"],
+    ans: 1,
+    exp: "QS. Al-Mulk ayat 16 mengandung peringatan bahwa Allah yang berada di atas langit berkuasa mendatangkan azab, misalnya dengan menenggelamkan bumi atau mengirimkan badai pasir."
+  },
+  {
+    q: "Al-Yamin al-Ghamus adalah sumpah yang...",
+    opts: ["Dilakukan untuk kebaikan", "Dilakukan untuk menipu dan dapat menenggelamkan pelakunya ke neraka", "Lupa tidak ditepati", "Sudah ditepati dengan baik"],
+    ans: 1,
+    exp: "Al-Yamin al-Ghamus adalah sumpah palsu yang dilakukan untuk menipu. Disebut 'ghamus' yang artinya menenggelamkan karena dapat menenggelamkan pelakunya ke dalam neraka."
+  },
+  {
+    q: "Kafarat sumpah yang wajib dilakukan adalah...",
+    opts: ["Sholat taubat 2 rakaat", "Memberi makan/pakaian 10 orang miskin, atau memerdekakan budak", "Puasa 7 hari berturut-turut", "Sedekah sejumlah uang"],
+    ans: 1,
+    exp: "Kafarat sumpah adalah: memberi makan 10 orang miskin, atau memberi pakaian 10 orang miskin, atau memerdekakan budak. Jika tidak mampu melakukan salah satunya, maka berpuasa 3 hari."
+  },
+  {
+    q: "Hadis larangan bersumpah selain nama Allah diriwayatkan oleh...",
+    opts: ["Imam Syafi'i dan Imam Malik", "Imam Bukhari dan Muslim dari Umar bin Khattab", "Imam Ahmad dan Abu Dawud", "Imam Nasa'i dan Tirmidzi"],
+    ans: 1,
+    exp: "Hadis tentang larangan bersumpah selain nama Allah diriwayatkan oleh Imam Bukhari dan Imam Muslim, bersumber dari sahabat Umar bin Khattab RA."
+  },
+  {
+    q: "Secara bahasa, ibadah berarti...",
+    opts: ["Berserah diri kepada Allah", "Merendahkan diri, tunduk, atau taat", "Melaksanakan rukun Islam", "Mengabdi dan melayani"],
+    ans: 1,
+    exp: "Secara bahasa, ibadah berarti merendahkan diri, tunduk, atau taat. Sedangkan secara syariat, ibadah adalah segala yang dicintai dan diridhai Allah, baik ucapan maupun perbuatan."
+  },
+  {
+    q: "Contoh mukjizat Nabi Musa AS yang terkenal adalah...",
+    opts: ["Bisa menghidupkan orang mati", "Tongkat berubah menjadi ular", "Membelah rembulan", "Al-Qur'an sebagai mukjizat"],
+    ans: 1,
+    exp: "Mukjizat Nabi Musa AS yang paling terkenal adalah tongkat yang bisa berubah menjadi ular dan membelah laut Merah. Nabi Isa AS bisa menyembuhkan buta, Nabi Muhammad SAW mukjizat terbesarnya adalah Al-Qur'an."
+  },
+  {
+    q: "Yang termasuk Rasul Ulul Azmi adalah...",
+    opts: ["Nabi Adam, Idris, Nuh, Ibrahim, Ismail", "Nabi Nuh, Ibrahim, Musa, Isa, Muhammad SAW", "Nabi Yusuf, Dawud, Sulaiman, Yunus, Luth", "Nabi Ismail, Ishak, Yakub, Yusuf, Harun"],
+    ans: 1,
+    exp: "Rasul Ulul Azmi ada 5: Nabi Nuh AS, Nabi Ibrahim AS, Nabi Musa AS, Nabi Isa AS, dan Nabi Muhammad SAW. Mereka disebut Ulul Azmi karena keteguhan dan kesabaran yang luar biasa."
+  },
+  {
+    q: "Manfaat beriman kepada Takdir adalah...",
+    opts: ["Membuat kita malas berusaha", "Menumbuhkan sabar saat musibah dan tidak sombong saat sukses", "Pasrah tanpa berdoa", "Tidak perlu ikhtiar lagi"],
+    ans: 1,
+    exp: "Manfaat beriman kepada Takdir: menumbuhkan sikap sabar saat tertimpa musibah (karena sudah ketetapan Allah) dan tidak sombong saat sukses (karena semua dari Allah)."
+  },
+  {
+    q: "Dalam mencari rezeki, seorang Muslim harus...",
+    opts: ["Dengan cara apapun asal berhasil", "Dengan cara halal, jujur, dan tetap bertawakal kepada Allah", "Mengutamakan keuntungan sebesar-besarnya", "Tidak perlu bekerja, cukup berdoa"],
+    ans: 1,
+    exp: "Mencari rezeki harus dengan cara yang halal, jujur, dan tetap bersandar (tawakal) kepada Allah. Islam mengajarkan keseimbangan antara ikhtiar dan tawakal."
+  },
+  {
+    q: "Penerapan Islam Kaffah dalam ibadah berarti...",
+    opts: ["Boleh menambah cara ibadah sesuai kreativitas", "Melaksanakan ibadah sesuai sunah tanpa menambah-nambah (bid'ah)", "Pilih ibadah yang terasa mudah saja", "Ibadah cukup di waktu tertentu"],
+    ans: 1,
+    exp: "Penerapan Islam Kaffah dalam ibadah adalah melaksanakan salat, puasa, dan ibadah lainnya sesuai sunah Nabi tanpa menambah-nambah (bid'ah) atau mengurangi yang sudah ditetapkan."
+  },
+  {
+    q: "Contoh inkonsistensi Islam Kaffah adalah...",
+    opts: ["Sholat 5 waktu tapi malas sedekah", "Rajin ibadah tapi masih melakukan praktik klenik atau maksiat dalam muamalah", "Puasa Ramadan tapi tidak puasa sunnah", "Belum hafal Al-Qur'an"],
+    ans: 1,
+    exp: "Inkonsistensi Islam Kaffah misalnya: beribadah rajin (sholat, puasa) namun masih melakukan praktik klenik/perdukunan atau melakukan kemaksiatan dalam muamalah sehari-hari."
+  },
+  {
+    q: "Perbedaan antara Islam dan Iman adalah...",
+    opts: ["Islam dan Iman sama saja", "Islam adalah amalan lahiriyah, Iman adalah amalan batiniyah/keyakinan hati", "Islam lebih tinggi dari Iman", "Iman cukup tanpa Islam"],
+    ans: 1,
+    exp: "Islam adalah amalan lahiriyah (syahadat, salat, zakat, puasa, haji), sedangkan Iman adalah amalan batiniyah (keyakinan hati terhadap Allah, malaikat, kitab, rasul, hari akhir, takdir)."
+  },
+  {
+    q: "Penyimpangan ziarah kubur yang terlarang adalah...",
+    opts: ["Mendoakan si mayit", "Menjadikan kuburan tempat meminta-minta nasib atau berdoa kepada selain Allah", "Membaca Al-Fatihah di kuburan", "Mengunjungi makam ulama untuk mengambil pelajaran"],
+    ans: 1,
+    exp: "Ziarah kubur boleh dilakukan dengan niat yang benar (mendoakan si mayit, mengingat mati). Yang dilarang adalah menjadikan kuburan sebagai tempat meminta-minta kepada yang sudah meninggal."
+  },
+  {
+    q: "Iman kepada Rasul relevan dengan rukun iman ke berapa?",
+    opts: ["Rukun iman ke-3", "Rukun iman ke-4", "Rukun iman ke-5", "Rukun iman ke-2"],
+    ans: 1,
+    exp: "Iman kepada Rasul adalah rukun iman ke-4. Urutannya: (1) Iman kepada Allah, (2) Malaikat, (3) Kitab-kitab, (4) Rasul-rasul, (5) Hari Akhir, (6) Qada dan Qadar."
+  },
+  {
+    q: "Manfaat beriman kepada Hari Kiamat adalah...",
+    opts: ["Membuat kita takut mati berlebihan", "Memotivasi memperbanyak amal saleh dan menjauhi kemaksiatan", "Membuat kita pesimis dalam hidup", "Tidak perlu merencanakan masa depan"],
+    ans: 1,
+    exp: "Beriman kepada Hari Kiamat memotivasi kita untuk memperbanyak amal saleh dan menjauhi kemaksiatan, karena kita tahu semua perbuatan akan dipertanggungjawabkan di hadapan Allah."
+  },
+  {
+    q: "Sifat-sifat Malaikat yang benar adalah...",
+    opts: ["Punya nafsu dan bisa membangkang", "Selalu taat, tidak memiliki nafsu, dan tercipta dari cahaya", "Bisa mati seperti manusia", "Hanya ada di surga saja"],
+    ans: 1,
+    exp: "Sifat malaikat: selalu taat kepada Allah, tidak memiliki nafsu (tidak makan, minum, menikah), dan tercipta dari cahaya (nur). Berbeda dengan jin yang tercipta dari api."
+  },
+  {
+    q: "Muroqobah dalam penerapan akidah sehari-hari artinya...",
+    opts: ["Selalu rajin sholat berjamaah", "Selalu merasa diawasi Allah dalam setiap ucapan dan perbuatan", "Membaca Al-Qur'an setiap hari", "Berpuasa sunnah rutin"],
+    ans: 1,
+    exp: "Muroqobah berarti selalu merasa diawasi Allah dalam setiap ucapan dan perbuatan. Ini adalah penerapan akidah sehari-hari yang menjaga seorang Muslim dari perbuatan tercela."
+  },
+  {
+    q: "Pilihan urutan kafarat sumpah yang benar adalah...",
+    opts: ["Puasa dulu, baru memberi makan jika mampu", "Memilih antara memberi makan, pakaian, atau memerdekakan budak; jika tidak mampu baru puasa", "Bebas memilih mana saja", "Hanya puasa 3 hari"],
+    ans: 1,
+    exp: "Urutan kafarat sumpah: pertama pilih salah satu dari (memberi makan 10 orang miskin / memberi pakaian / memerdekakan budak). Jika benar-benar tidak mampu ketiganya, baru puasa 3 hari."
+  },
+  {
+    q: "Yang dimaksud Tauhid Rububiyyah adalah...",
+    opts: ["Mengesakan Allah dalam ibadah", "Mengesakan Allah dalam penciptaan, pengaturan, dan kepemilikan alam semesta", "Mengesakan Allah dalam nama dan sifat", "Beriman kepada semua Rasul Allah"],
+    ans: 1,
+    exp: "Tauhid Rububiyyah adalah mengesakan Allah sebagai Rabb (pencipta, pengatur, dan pemilik) seluruh alam semesta. Bahkan orang musyrik pun mengakui Tauhid Rububiyyah ini."
+  },
+  {
+    q: "Seorang Muslim yang selalu bersyukur saat nikmat dan bersabar saat musibah mencerminkan...",
+    opts: ["Islam yang biasa saja", "Penerapan akidah yang kuat dan keimanan yang sempurna", "Riya yang terselubung", "Sifat orang munafik"],
+    ans: 1,
+    exp: "Bersyukur saat nikmat dan bersabar saat musibah adalah cerminan akidah yang kuat. Rasulullah SAW bersabda: 'Sungguh menakjubkan perkara orang beriman... jika diberi nikmat bersyukur dan jika ditimpa musibah bersabar.'"
+  }
+];
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function showToast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function showLoading(txt='Memuat...') {
+  document.getElementById('loadingText').textContent = txt;
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('show');
+}
+
+function showFeedback(emoji) {
+  const p = document.getElementById('feedbackPopup');
+  p.textContent = emoji;
+  p.classList.add('show');
+  setTimeout(() => p.classList.remove('show'), 800);
+}
+
+// ============================================================
+// WELCOME & NAME INPUT
+// ============================================================
+document.getElementById('nameInput').addEventListener('input', function() {
+  validateStart();
+});
+
+function selectClass(btn, cls) {
+  document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  playerClass = cls;
+  validateStart();
+}
+
+function validateStart() {
+  const name = document.getElementById('nameInput').value.trim();
+  document.getElementById('btnStart').disabled = !(name.length >= 2 && playerClass);
+}
+
+// ============================================================
+// QUIZ START
+// ============================================================
+async function startQuiz() {
+  playerName = document.getElementById('nameInput').value.trim();
+  if (!playerName || !playerClass) return;
+
+  showLoading('Memuat 50 soal...');
+
+  // Shuffle all 50 questions
+  questions = [...ALL_QUESTIONS].sort(() => Math.random() - 0.5);
+
+  // Shuffle options for each question
+  questions = questions.map(q => {
+    const optsCopy = [...q.opts];
+    const correctOpt = optsCopy[q.ans];
+    const shuffled = optsCopy.sort(() => Math.random() - 0.5);
+    return { ...q, opts: shuffled, ans: shuffled.indexOf(correctOpt) };
+  });
+
+  currentQ = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+  streak = 0;
+  maxStreak = 0;
+
+  setTimeout(() => {
+    hideLoading();
+    showScreen('screenQuiz');
+
+    // Update header
+    const initial = playerName.charAt(0).toUpperCase();
+    document.getElementById('playerAvatar').textContent = initial;
+    document.getElementById('playerNameSmall').textContent = playerName;
+    document.getElementById('playerClassSmall').textContent = 'Kelas ' + playerClass;
+
+    renderQuestion();
+  }, 600);
+}
+
+// ============================================================
+// QUESTION RENDERING
+// ============================================================
+function renderQuestion() {
+  answered = false;
+  expVisible = false;
+
+  const q = questions[currentQ];
+  document.getElementById('qNumber').textContent = `SOAL ${currentQ+1} dari 50`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('statQ').textContent = `${currentQ+1}/50`;
+  document.getElementById('statScore').textContent = score;
+  document.getElementById('statStreak').textContent = `🔥${streak}`;
+  document.getElementById('progressBar').style.width = `${((currentQ+1)/50)*100}%`;
+
+  // Hide explanation
+  const expBox = document.getElementById('explanationBox');
+  expBox.classList.remove('show');
+  expBox.style.display = 'none';
+  document.getElementById('btnSeeExp').style.display = 'none';
+  document.getElementById('btnNext').disabled = true;
+
+  // Render options
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const labels = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-label">${labels[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 30;
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!answered) timeOut();
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  document.getElementById('statTimer').textContent = timeLeft;
+  document.getElementById('timerBar').style.width = `${(timeLeft/30)*100}%`;
+}
+
+function timeOut() {
+  answered = true;
+  streak = 0;
+  wrong++;
+  showFeedback('⏰');
+
+  // Show correct answer
+  const q = questions[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+  });
+
+  document.getElementById('expText').textContent = q.exp;
+  document.getElementById('btnSeeExp').style.display = 'block';
+  document.getElementById('btnNext').disabled = false;
+  showToast('⏰ Waktu habis!');
+}
+
+// ============================================================
+// ANSWER SELECTION
+// ============================================================
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+
+  const q = questions[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(btn => btn.disabled = true);
+
+  const timeBonus = Math.floor(timeLeft / 3);
+
+  if (idx === q.ans) {
+    btns[idx].classList.add('correct');
+    streak++;
+    if (streak > maxStreak) maxStreak = streak;
+    correct++;
+    const pts = 20 + timeBonus + (streak >= 3 ? 10 : 0);
+    score += pts;
+    showFeedback('✅');
+    showToast(`+${pts} poin! ${streak >= 3 ? '🔥 Streak bonus!' : ''}`);
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.ans].classList.add('correct');
+    streak = 0;
+    wrong++;
+    showFeedback('❌');
+    showToast('Jawaban salah!');
+  }
+
+  document.getElementById('statScore').textContent = score;
+  document.getElementById('statStreak').textContent = `🔥${streak}`;
+  document.getElementById('expText').textContent = q.exp;
+  document.getElementById('btnSeeExp').style.display = 'block';
+  document.getElementById('btnNext').disabled = false;
+}
+
+// ============================================================
+// EXPLANATION
+// ============================================================
+function toggleExplanation() {
+  const box = document.getElementById('explanationBox');
+  expVisible = !expVisible;
+  if (expVisible) {
+    box.style.display = 'block';
+    box.classList.add('show');
+    document.getElementById('btnSeeExp').textContent = '✕ Tutup Penjelasan';
+  } else {
+    box.classList.remove('show');
+    box.style.display = 'none';
+    document.getElementById('btnSeeExp').textContent = '💡 Lihat Penjelasan';
+  }
+}
+
+// ============================================================
+// NEXT QUESTION / FINISH
+// ============================================================
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= 50) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishQuiz() {
+  clearInterval(timerInterval);
+
+  // Save to leaderboard
+  saveScore();
+
+  // Show result
+  const pct = Math.round((correct/50)*100);
+  document.getElementById('resultName').textContent = playerName;
+  document.getElementById('resultScore').textContent = score;
+  document.getElementById('rCorrect').textContent = correct;
+  document.getElementById('rWrong').textContent = wrong;
+  document.getElementById('rStreak').textContent = maxStreak;
+
+  let emoji, gradeText, gradeClass;
+  if (pct >= 85) { emoji='🏆'; gradeText='LUAR BIASA! Sangat Memuaskan'; gradeClass='grade-a'; }
+  else if (pct >= 70) { emoji='🌟'; gradeText='BAGUS! Memuaskan'; gradeClass='grade-a'; }
+  else if (pct >= 55) { emoji='👍'; gradeText='CUKUP BAIK! Terus Semangat'; gradeClass='grade-b'; }
+  else { emoji='💪'; gradeText='Perlu Belajar Lebih Giat!'; gradeClass='grade-c'; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  const gradeEl = document.getElementById('resultGrade');
+  gradeEl.textContent = gradeText;
+  gradeEl.className = `result-grade ${gradeClass}`;
+
+  showScreen('screenResult');
+}
+
+// ============================================================
+// LEADERBOARD
+// ============================================================
+function getLeaderboard() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch { return []; }
+}
+
+function saveScore() {
+  const lb = getLeaderboard();
+  lb.push({
+    name: playerName,
+    cls: playerClass,
+    score: score,
+    correct: correct,
+    date: new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+  });
+  // Keep top 50
+  lb.sort((a,b) => b.score - a.score);
+  const top = lb.slice(0, 50);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(top));
+}
+
+function showLeaderboard() {
+  const lb = getLeaderboard();
+  const list = document.getElementById('leaderboardList');
+
+  if (lb.length === 0) {
+    list.innerHTML = '<div class="lb-empty">Belum ada yang bermain.<br>Jadilah yang pertama! 🚀</div>';
+  } else {
+    list.innerHTML = lb.map((entry, i) => {
+      const rankClass = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n';
+      const rankLabel = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+      return `
+        <div class="lb-item">
+          <div class="lb-rank ${rankClass}">${rankLabel}</div>
+          <div class="lb-info">
+            <div class="lb-name">${escHtml(entry.name)}</div>
+            <div class="lb-meta">Kelas ${escHtml(entry.cls)} • ${entry.correct}/50 benar • ${entry.date}</div>
+          </div>
+          <div>
+            <div class="lb-score">${entry.score}</div>
+            <div class="lb-score-sub">poin</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  showScreen('screenLeaderboard');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showWelcome() {
+  showScreen('screenWelcome');
+}
+
+function retryQuiz() {
+  showScreen('screenWelcome');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('nameInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    if (!document.getElementById('btnStart').disabled) startQuiz();
+  }
+});
+</script>
+</body>
+</html>
